@@ -9,10 +9,10 @@ async function publishTopic() {
 
   const args = process.argv.slice(2);
   const key = args[0] || "anonymous.info";
-  const message = args.slice(1).join(' ') || "Hello Topic Exchange!";
+  const message = args.slice(1).join(' ') || "Hello from Topic Exchange!";
 
   channel.publish(exchange, key, Buffer.from(message));
-  console.log(`Sent '${key}':'${message}'`);
+  console.log(`Sent '${key}': '${message}'`);
 
   await channel.close();
   await connection.close();

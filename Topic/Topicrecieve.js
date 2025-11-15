@@ -7,10 +7,10 @@ async function subscribeTopic() {
 
   await channel.assertExchange(exchange, "topic", { durable: false });
   const q = await channel.assertQueue('', { exclusive: true });
-
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.log("Usage: node receive.js <binding_pattern>");
+    console.log("Usage: node subscribeTopic.js <binding_pattern>");
+    console.log("Example: node subscribeTopic.js 'kern.*' '*.error'");
     process.exit(1);
   }
 
@@ -20,9 +20,17 @@ async function subscribeTopic() {
 
   console.log("Waiting for topic messages...");
 
-  channel.consume(q.queue, (msg) => {
-    console.log(`Received '${msg.fields.routingKey}':'${msg.content.toString()}'`);
-  }, { noAck: true });
+  channel.consume(
+    q.queue,
+    (msg) => {
+      const content = msg.content.toString();
+      console.log(`Received '${msg.fields.routingKey}': '${content}'`);
+      setTimeout(() => {
+        console.log(`Done processing '${content}'`);
+      }, 10000);
+    },
+    { noAck: true }
+  );
 }
 
 subscribeTopic();

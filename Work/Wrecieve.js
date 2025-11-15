@@ -1,24 +1,34 @@
-const amqp = require('amqplib');
+const amqp = require("amqplib");
+const readline = require("readline");
 
-async function receiveMessages() {
-  const connection = await amqp.connect("amqp://guest:guest@127.0.0.1");
-  const channel = await connection.createChannel();
-  const queue = "task_queue";
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-  await channel.assertQueue(queue, { durable: true });
-  channel.prefetch(1); 
+rl.question("Enter queue name (default: task_queue): ", async (queue) => {
+  queue = queue || "task_queue";
 
-  console.log("Waiting for messages...");
+  try {
+    const connection = await amqp.connect("amqp://guest:guest@127.0.0.1");
+    const channel = await connection.createChannel();
+    await channel.assertQueue(queue, { durable: true });
+    channel.prefetch(1);
 
-  channel.consume(queue, (msg) => {
-    const task = msg.content.toString();
-    console.log("Received:", task);
+    console.log(`Waiting for messages from "${queue}"...\n`);
 
-    setTimeout(() => {
-      console.log("Done:", task);
-      channel.ack(msg);
-    }, 2000);
-  });
-}
+    channel.consume(queue, (msg) => {
+      const task = msg.content.toString();
+      console.log("Received:", task);
 
-receiveMessages();
+      setTimeout(() => {
+        console.log("Done:", task);
+        channel.ack(msg);
+      }, 10000);
+    });
+  } catch (err) {
+    console.error("Error:", err.message);
+  } finally {
+    rl.close();
+  }
+});

@@ -12,7 +12,7 @@ async function receiveLogs() {
 
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.log("Usage: node recieve [info] [warning] [error]");
+    console.log("Usage: node receive [info] [warning] [error]");
     process.exit(1);
   }
 
@@ -21,7 +21,12 @@ async function receiveLogs() {
   }
 
   channel.consume(q.queue, (msg) => {
-    console.log(` Received '${msg.fields.routingKey}':'${msg.content.toString()}'`);
+    const logMsg = msg.content.toString();
+    console.log(`Received '${msg.fields.routingKey}': '${logMsg}'`);
+
+    setTimeout(() => {
+      console.log(`Done processing '${logMsg}'`);
+    }, 10000);
   }, { noAck: true });
 }
 

@@ -6,9 +6,10 @@ async function publishMessage() {
   const exchange = "logs";
 
   await channel.assertExchange(exchange, "fanout", { durable: false });
-  const message = process.argv.slice(2).join(' ') || "Hello Subscribers!";
 
-  channel.publish(exchange, '', Buffer.from(message));
+  const message = process.argv.slice(2).join(" ") || "Hello Subscribers!";
+  channel.publish(exchange, "", Buffer.from(message));
+
   console.log("Sent:", message);
 
   await channel.close();

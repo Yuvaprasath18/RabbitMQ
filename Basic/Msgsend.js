@@ -1,16 +1,18 @@
-var amqp = require('amqplib');
+const amqp = require('amqplib');
 
-async function message(){
-    const connection = await amqp.connect("amqp://localhost");
-    const channel=await connection.createChannel();
-    const queue="hello";
+async function sendMessage() {
+  const connection = await amqp.connect("amqp://localhost");
+  const channel = await connection.createChannel();
+  const queue = "hello";
+  const message = process.argv.slice(2).join(" ") || "Hello World";
 
-    await channel.assertQueue(queue);
-    channel.sendToQueue(queue, Buffer.from("Hello Developer!"));
+  await channel.assertQueue(queue, { durable: true });
+  channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
 
-    console.log("Message sent");
-    await channel.close();
-    await connection.close();
+  console.log("Sent:", message);
+
+  await channel.close();
+  await connection.close();
 }
 
-message();
+sendMessage();

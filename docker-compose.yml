@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  rabbit1:
+    image: rabbitmq:3-management
+    hostname: rabbit1
+    networks:
+      - rabbit_net
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=MYCOOKIE
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  rabbit2:
+    image: rabbitmq:3-management
+    hostname: rabbit2
+    networks:
+      - rabbit_net
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=MYCOOKIE
+    ports:
+      - "15673:15672"
+      - "5673:5672"
+
+  rabbit3:
+    image: rabbitmq:3-management
+    hostname: rabbit3
+    networks:
+      - rabbit_net
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=MYCOOKIE
+    ports:
+      - "15674:15672"
+      - "5674:5672"
+
+networks:
+  rabbit_net:
+    driver: bridge

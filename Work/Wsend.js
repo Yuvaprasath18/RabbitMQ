@@ -1,4 +1,4 @@
-const amqp = require('amqplib');
+const amqp = require("amqplib");
 
 async function sendMessage() {
   const connection = await amqp.connect("amqp://guest:guest@127.0.0.1");
@@ -7,10 +7,10 @@ async function sendMessage() {
 
   await channel.assertQueue(queue, { durable: true });
 
-  const message = process.argv.slice(2).join(' ') || "Hello Task!";
+  const message = "Hello Task!";
   channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
+  console.log("Sent:", message);
 
-  console.log("Sent");
   await channel.close();
   await connection.close();
 }

@@ -8,11 +8,10 @@ async function publishMessage() {
   await channel.assertExchange(exchange, "direct", { durable: false });
 
   const args = process.argv.slice(2);
-  const severity = args[0] || "info";
-  const message = args.slice(1).join(' ') || "Hello RabbitMQ Routing!";
-
+  const severity = args[0] || "info"; 
+  const message = args.slice(1).join(' ') || "Hello from Direct Exchange!";
   channel.publish(exchange, severity, Buffer.from(message));
-  console.log(`Sent '${severity}':'${message}'`);
+  console.log(`Sent '${severity}': '${message}'`);
 
   await channel.close();
   await connection.close();
